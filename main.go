@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"time"
+
+	"github.com/sersoong/go-ping/utils"
 )
 
 var (
@@ -18,18 +21,34 @@ func main() {
 	// 解析传入参数
 	ParseArgs()
 	args := os.Args
-
+	desIP := args[len(args)-1]
 	// 如果参数数量小于2则提示help信息
 	if len(args) < 2 {
 		Usage()
 	}
 
+	fmt.Printf("\n正在 ping %s 具有 %d 字节的数据:\n", desIP, size)
+
 	var SuccessTimes int
 	var FailTimes int
 	var totalTime int
-
+	var minTime int
+	var maxTime int
 	for i := 0; i < num; i++ {
-
+		ret := utils.Ping(desIP, size, timeout)
+		if ret.Success {
+			SuccessTimes++
+			if ret.MinTime > ret.Et {
+				ret.MinTime = ret.Et
+			}
+			if ret.MaxTime < ret.Et {
+				ret.MaxTime = ret.Et
+			}
+			fmt.Printf("来自 %s 的回复: 字节=%d 时间=%dms TTL=%d\n", desIP, ret.RetBytesLenth, ret.Et, ret.TTL)
+		} else {
+			FailTimes++
+		}
+		time.Sleep(1 * time.Second)
 	}
 	fmt.Printf("\n%s 的 Ping 统计信息:\n", desIP)
 	fmt.Printf("    数据包: 已发送 = %d，已接收 = %d，丢失 = %d (%.2f%% 丢失)，\n", SuccessTimes+FailTimes, SuccessTimes, FailTimes, float64(FailTimes*100)/float64(SuccessTimes+FailTimes))

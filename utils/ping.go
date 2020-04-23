@@ -3,9 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"log"
-	"math"
 	"net"
 	"time"
 )
@@ -25,8 +23,6 @@ type Ret struct {
 	RetBytesLenth int
 	TTL           byte
 	Et            int
-	MinTime       int
-	MaxTime       int
 }
 
 var (
@@ -56,9 +52,6 @@ func CheckSum(data []byte) uint16 {
 //Ping ping目标地址
 func Ping(desIP string, size int, timeout int64) Ret {
 	var ret Ret
-	ret.MinTime = int(math.MaxInt32)
-
-	fmt.Printf("\n正在 ping %s 具有 %d 字节的数据:\n", desIP, size)
 
 	// Dial icmp
 	conn, err := net.DialTimeout("ip:icmp", desIP, time.Duration(timeout)*time.Millisecond)
@@ -118,17 +111,11 @@ func Ping(desIP string, size int, timeout int64) Ret {
 	}
 
 	et := int(time.Since(t1) / 1000000)
-	if ret.MinTime > et {
-		ret.MinTime = et
-	}
-	if ret.MaxTime < et {
-		ret.MaxTime = et
-	}
+
 	ret.TTL = buf[8]
 	ret.RetBytesLenth = len(buf[28:n])
 	ret.Et = et
-	fmt.Printf("来自 %s 的回复: 字节=%d 时间=%dms TTL=%d\n", desIP, len(buf[28:n]), et, buf[8])
-	time.Sleep(1 * time.Second)
+
 	ret.Success = true
 	return ret
 }
