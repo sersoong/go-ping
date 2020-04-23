@@ -56,7 +56,7 @@ func Ping(desIP string, size int, timeout int64) Ret {
 	// Dial icmp
 	conn, err := net.DialTimeout("ip:icmp", desIP, time.Duration(timeout)*time.Millisecond)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 	// 退出时关闭连接
 	defer conn.Close()
@@ -95,7 +95,7 @@ func Ping(desIP string, size int, timeout int64) Ret {
 	conn.SetDeadline(t1.Add(time.Duration(time.Duration(timeout) * time.Millisecond)))
 	n, err := conn.Write(data)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
 	}
 
 	// 定义读取buf
