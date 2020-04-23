@@ -105,7 +105,6 @@ func Ping(desIP string, size int, timeout int64) Ret {
 
 	// 请求超时增加失败次数
 	if err != nil {
-		log.Println("请求超时。")
 		ret.Success = false
 		return ret
 	}

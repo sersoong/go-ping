@@ -38,14 +38,15 @@ func main() {
 		ret := utils.Ping(desIP, size, timeout)
 		if ret.Success {
 			SuccessTimes++
-			if ret.MinTime > ret.Et {
-				ret.MinTime = ret.Et
+			if minTime > ret.Et {
+				minTime = ret.Et
 			}
-			if ret.MaxTime < ret.Et {
-				ret.MaxTime = ret.Et
+			if maxTime < ret.Et {
+				maxTime = ret.Et
 			}
 			fmt.Printf("来自 %s 的回复: 字节=%d 时间=%dms TTL=%d\n", desIP, ret.RetBytesLenth, ret.Et, ret.TTL)
 		} else {
+			fmt.Println("请求超时。")
 			FailTimes++
 		}
 		time.Sleep(1 * time.Second)
