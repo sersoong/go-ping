@@ -32,7 +32,7 @@ func main() {
 	var SuccessTimes int
 	var FailTimes int
 	var totalTime int
-	var minTime int
+	var minTime = int(math.MaxInt32)
 	var maxTime int
 	for i := 0; i < num; i++ {
 		ret := utils.Ping(desIP, size, timeout)
@@ -45,6 +45,7 @@ func main() {
 				maxTime = ret.Et
 			}
 			fmt.Printf("来自 %s 的回复: 字节=%d 时间=%dms TTL=%d\n", desIP, ret.RetBytesLenth, ret.Et, ret.TTL)
+			totalTime += ret.Et
 		} else {
 			fmt.Println("请求超时。")
 			FailTimes++
@@ -63,7 +64,7 @@ func main() {
 func ParseArgs() {
 	flag.Int64Var(&timeout, "w", 1000, "等待每次回复的超时时间（毫秒）")
 	flag.IntVar(&num, "n", 4, "要发送的请求数")
-	flag.IntVar(&size, "1", 32, "要发送缓冲区大小")
+	flag.IntVar(&size, "l", 32, "要发送缓冲区大小")
 	flag.BoolVar(&stop, "t", false, "Ping 指定的主机，直到停止")
 
 	flag.Parse()
