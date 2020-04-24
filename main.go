@@ -29,6 +29,13 @@ func main() {
 
 	fmt.Printf("\n正在 ping %s 具有 %d 字节的数据:\n", desIP, size)
 
+	defer func() {
+		fmt.Println("recover start...")
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("recover end")
+	}()
 	var SuccessTimes int
 	var FailTimes int
 	var totalTime int
